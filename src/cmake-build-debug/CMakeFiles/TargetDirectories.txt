@@ -1,0 +1,3 @@
+/Users/micheacolautti/Documents/06. GitHub/FigurePanini/src/cmake-build-debug/CMakeFiles/src.dir
+/Users/micheacolautti/Documents/06. GitHub/FigurePanini/src/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/micheacolautti/Documents/06. GitHub/FigurePanini/src/cmake-build-debug/CMakeFiles/rebuild_cache.dir
