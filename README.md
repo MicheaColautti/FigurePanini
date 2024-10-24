@@ -1,6 +1,6 @@
 # Figure Panini
-# Algorithms and Data Structures
-## SA 2024/2025
+## Algorithms and Data Structures
+### SA 2024/2025
 |Titolo             |Autori             |
 |:------------------|:------------------|
 | Figure paninini   |<b>Michea Colautti,</b> <b>Julian Cummaudo</b>   |
