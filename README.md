@@ -13,7 +13,7 @@
 ## Descrizione
 
 #### Consegna:
-- [QdC](Doc/Figurine_Panini.pdf)
+- [Cosenga](Doc/Figurine_Panini.pdf)
 
 #### Struttura:
 - [Codice](src/)
