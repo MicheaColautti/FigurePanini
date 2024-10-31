@@ -1,13 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Funzione per leggere il file e memorizzare i dati in un array
+#include <errno.h> // Per ottenere il codice di errore
+#include <string.h> // Per stampare una descrizione dell'errore
+#include <sys/syslimits.h>
+#include <unistd.h>
+
 void readFile(const char* fileName, int** data, int* size) {
-    FILE* file = fopen(fileName, "r");
+
+    // Opening file
+    FILE* file;
+
+    file = fopen(fileName, "r");
     if (file == NULL) {
-        printf("Errore nell'apertura del file.\n");
+        // Stampa il codice di errore e una descrizione dell'errore
+        printf("Errore nell'apertura del file: %s\n", strerror(errno));
         exit(1);
     }
+
     int temp, count = 0;
     while (fscanf(file, "%d", &temp) != EOF) {
         count++;
@@ -18,6 +28,7 @@ void readFile(const char* fileName, int** data, int* size) {
         printf("Errore di allocazione della memoria.\n");
         exit(1);
     }
+
     rewind(file);
     for (int i = 0; i < count; i++) {
         fscanf(file, "%d", &((*data)[i]));
@@ -58,7 +69,7 @@ int** createMatrix(int* data, int days, int tradingCards) {
 
 
 int main() {
-    const char* fileName = "src/data/input.txt";
+    const char* fileName = "../data/input.txt";
     int* data = NULL;
     int dataSize = 0;
     int days = 0, tradingCards = 0;
@@ -68,12 +79,17 @@ int main() {
     int** matrix = createMatrix(data + 2, days, tradingCards);
 
     // Stampa la matrice
+    printf("Days: %d\n",days);
+    printf("TradingCards: %d\nData:\n",tradingCards);
     for (int i = 0; i < days; i++) {
         for (int j = 0; j < tradingCards; j++) {
             printf("%d ", matrix[i][j]);
         }
         printf("\n");
     }
+
+
+
 
 
     //fixme implement function to get deals
