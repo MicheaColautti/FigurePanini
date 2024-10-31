@@ -67,15 +67,37 @@ int** createMatrix(int* data, int days, int tradingCards) {
     return matrix;
 }
 
+int getMostValue(int** playerData){
+
+}
+
+int** returnPlayerData(int** matrix,int rows){
+
+    // Allocate memory for an array of int* pointers (rows).
+    int** playerData = malloc(rows * sizeof(int*));
+
+    // Allocate memory for each row (2 columns in each).
+    for (int i = 0; i < rows; i++) {
+        playerData[i] = malloc(2 * sizeof(int));
+    }
+
+
+
+}
+
+
+
 
 int main() {
-    const char* fileName = "../data/input.txt";
+    const char* fileName = "../instances/instance_100_10.txt";
     int* data = NULL;
     int dataSize = 0;
     int days = 0, tradingCards = 0;
 
     readFile(fileName, &data, &dataSize);
     initializeValues(data, &days, &tradingCards);
+    tradingCards=tradingCards*2;
+
     int** matrix = createMatrix(data + 2, days, tradingCards);
 
     // Stampa la matrice
