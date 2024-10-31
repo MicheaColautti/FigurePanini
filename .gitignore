@@ -1,4 +1,6 @@
 **/.DS_Store
 **/.idea
 **/Thumbs.db
-/src/cmake-build-debug/
+**/src/cmake-build-debug/
+
+
