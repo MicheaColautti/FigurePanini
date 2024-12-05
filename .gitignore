@@ -3,5 +3,9 @@
 **/Thumbs.db
 **/src/cmake-build-debug/**
 src/cmake-build-debug/**
-
+src/cmake-build-debug/.ninja_deps
+src/cmake-build-debug/.ninja_log
+src/cmake-build-debug/Testing/Temporary/LastTest.log
+src/cmake-build-debug/src
+src/cmake-build-debug/CMakeFiles/src.dir/main.c.o
 
