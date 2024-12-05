@@ -19,3 +19,6 @@
 - [Codice](src/)
 - [Documenti](Doc)
 
+#### Esecuzione
+
+Il codice viene eseguito con CLion, aprendo la cartella `src/` come progetto e facedno partire il file `main.c`
