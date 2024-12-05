@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
-#include <sys/syslimits.h>
-#include <unistd.h>
 
 void readFile(const char* fileName, int** data, int* size) {
     FILE* file = fopen(fileName, "r");
@@ -37,7 +35,7 @@ void initializeValues(int* data, int* days, int* tradingCards) {
     *tradingCards = data[1];
 }
 
-int** createMatrix(int* data, int days, int tradingCards) {
+int** createMatrix(int* data, int days, int cols) {
     int** matrix = (int**)malloc(days * sizeof(int*));
     if (matrix == NULL) {
         printf("Errore di allocazione della memoria per la matrice.\n");
@@ -45,106 +43,130 @@ int** createMatrix(int* data, int days, int tradingCards) {
     }
 
     for (int i = 0; i < days; i++) {
-        matrix[i] = (int*)malloc(tradingCards * sizeof(int));
+        matrix[i] = (int*)malloc(cols * sizeof(int));
         if (matrix[i] == NULL) {
             printf("Errore di allocazione della memoria per la riga %d della matrice.\n", i);
             exit(1);
         }
 
-        for (int j = 0; j < tradingCards; j++) {
-            matrix[i][j] = data[i * tradingCards + j];
+        for (int j = 0; j < cols; j++) {
+            matrix[i][j] = data[i * cols + j];
         }
     }
 
     return matrix;
 }
 
-int** returnCardData(int** matrix, int rows, int colOffset) {
-    int** playerData = (int**)malloc(rows * sizeof(int*));
-    if (playerData == NULL) {
-        printf("Errore di allocazione della memoria per playerData.\n");
-        exit(1);
-    }
-
-    for (int i = 0; i < rows; i++) {
-        playerData[i] = (int*)malloc(2 * sizeof(int));
-        if (playerData[i] == NULL) {
-            printf("Errore di allocazione della memoria per la riga %d di playerData.\n", i);
-            exit(1);
-        }
-
-        playerData[i][0] = matrix[i][colOffset+1];
-        playerData[i][1] = matrix[i][colOffset];
-    }
-
-    return playerData;
-}
-
-
-double getMaxDeal(int* matrix, int buy, int sell){
-
-
-
-
-
-}
-
 int main() {
-    const char* fileName = "../instances/instance_10_10.txt";
+    const char* fileName = "../instances/instance_100_100.txt";
     int* data = NULL;
     int dataSize = 0;
     int days = 0, tradingCards = 0;
 
+    // Read data from the file
     readFile(fileName, &data, &dataSize);
-    initializeValues(data, &days, &tradingCards);
-    int cols = tradingCards * 2;
 
+    // Initialize the number of days and trading cards
+    initializeValues(data, &days, &tradingCards);
+    int cols = tradingCards * 2; // Each card has a buy and sell price
+
+    // Create the matrix with all data starting from data[2]
     int** matrix = createMatrix(data + 2, days, cols);
 
-    printf("Days: %d\n", days);
-    printf("TradingCards: %d\nData:\n", tradingCards);
+    int N = days;
+    int F = tradingCards;
 
-    for (int i = 0; i < days; i++) {
-        for (int j = 0; j < cols; j++) {
-            printf("%d ", matrix[i][j]);
-        }
-        printf("\n");
+    // Dynamically allocate buy_price and sell_price arrays
+    int** buy_price = (int**)malloc(N * sizeof(int*));
+    int** sell_price = (int**)malloc(N * sizeof(int*));
+    if (buy_price == NULL || sell_price == NULL) {
+        printf("Errore di allocazione della memoria.\n");
+        exit(1);
     }
 
-    for (int x = 0; x < tradingCards; x++) {
-        int colOffset = x * 2;
-        int** cardData = returnCardData(matrix, days, colOffset);
+    for (int i = 0; i < N; i++) {
+        buy_price[i] = (int*)malloc(F * sizeof(int));
+        sell_price[i] = (int*)malloc(F * sizeof(int));
+        if (buy_price[i] == NULL || sell_price[i] == NULL) {
+            printf("Errore di allocazione della memoria.\n");
+            exit(1);
+        }
+    }
 
-        printf("CardData for columns %d and %d:\n", colOffset, colOffset + 1);
-        for (int i = 0; i < days; i++) {
-            for (int j = 0; j < 2; j++) {
+    // Assign the buy and sell prices correctly
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < F; j++) {
+            int colOffset = j * 2;
+            // Since your input is Vi Ci, we swap them to Ci Vi
+            buy_price[i][j] = matrix[i][colOffset + 1]; // Ci,j (buy price)
+            sell_price[i][j] = matrix[i][colOffset];    // Vi,j (sell price)
+        }
+    }
 
-                printf("%d ", cardData[i][j]);
+    // Dynamically allocate dp array
+    double** dp = (double**)malloc((N + 1) * sizeof(double*));
+    if (dp == NULL) {
+        printf("Errore di allocazione della memoria.\n");
+        exit(1);
+    }
+    for (int i = 0; i <= N; i++) {
+        dp[i] = (double*)malloc((F + 1) * sizeof(double));
+        if (dp[i] == NULL) {
+            printf("Errore di allocazione della memoria.\n");
+            exit(1);
+        }
+    }
+
+    // Initialize DP table
+    dp[0][0] = 1.0; // Start with 1 CHF
+    for (int j = 1; j <= F; j++) {
+        dp[0][j] = 0.0; // No cards held initially
+    }
+
+    // Compute DP table
+    for (int i = 1; i <= N; i++) {
+        // For cash on day i
+        dp[i][0] = dp[i - 1][0]; // Start with previous day's cash
+        for (int j = 1; j <= F; j++) {
+            // Consider selling holdings from the previous day
+            double cash_from_selling = dp[i - 1][j] * sell_price[i - 1][j - 1];
+            if (cash_from_selling > dp[i][0]) {
+                dp[i][0] = cash_from_selling;
             }
-            printf("\n");
         }
-        printf("\n");
 
-
-        double deal=getMaxDeal(matrix,0,0);
-
-
-        /*
-         * NB Here we have the single matrix (Daysx2) with the data of a single player
-         * the data HAS BEEN INVERTED BY US, SO IT'S [BuyPrice, SellPrice] where SellPrice≤BuyPrice
-         **/
-        //FIXME
-
-        //pass to the recursive function the matrix of the current playerData.
-
-
+        // For each card on day i
+        for (int j = 1; j <= F; j++) {
+            dp[i][j] = dp[i - 1][j]; // Start with previous day's holdings
+            // Use dp[i][0], which includes cash from possible sales today
+            double card_bought = dp[i][0] / buy_price[i - 1][j - 1];
+            if (card_bought > dp[i][j]) {
+                dp[i][j] = card_bought;
+            }
+        }
     }
 
+    // The final capital is dp[N][0]
+    printf("%.2lf\n", dp[N][0]);
+
+    // Free allocated memory
     for (int i = 0; i < days; i++) {
         free(matrix[i]);
     }
     free(matrix);
     free(data);
+
+    for (int i = 0; i < N; i++) {
+        free(buy_price[i]);
+        free(sell_price[i]);
+    }
+    free(buy_price);
+    free(sell_price);
+
+    for (int i = 0; i <= N; i++) {
+        free(dp[i]);
+    }
+    free(dp);
 
     return 0;
 }
