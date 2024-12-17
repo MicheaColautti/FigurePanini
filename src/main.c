@@ -1,4 +1,4 @@
-#include <stdio.h>
+ #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
@@ -58,7 +58,7 @@ int** createMatrix(int* data, int days, int cols) {
 }
 
 int main() {
-    const char* fileName = "../instances/instance_100_100.txt";
+    const char* fileName = "../instances/instance_10_1.txt";
     int* data = NULL;
     int dataSize = 0;
     int days = 0, tradingCards = 0;
