@@ -1,7 +1,8 @@
- #include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <time.h>
 
 void readFile(const char* fileName, int** data, int* size) {
     FILE* file = fopen(fileName, "r");
@@ -58,7 +59,7 @@ int** createMatrix(int* data, int days, int cols) {
 }
 
 int main() {
-    const char* fileName = "../instances/instance_10_1.txt";
+    const char* fileName = "../instances/instance_100_100.txt";
     int* data = NULL;
     int dataSize = 0;
     int days = 0, tradingCards = 0;
@@ -72,6 +73,11 @@ int main() {
 
     // Create the matrix with all data starting from data[2]
     int** matrix = createMatrix(data + 2, days, cols);
+
+    //tempo iniziale
+    struct timespec start, end;
+    // Ottieni il tempo di inizio
+    clock_gettime(CLOCK_MONOTONIC, &start);
 
     int N = days;
     int F = tradingCards;
@@ -145,6 +151,11 @@ int main() {
             }
         }
     }
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    long seconds = end.tv_sec - start.tv_sec;
+    long nanoseconds = end.tv_nsec - start.tv_nsec;
+    double elapsed = seconds * 1000.0 + nanoseconds / 1.0e6;
+    printf("Tempo trascorso: %.3f ms\n", elapsed);
 
     // The final capital is dp[N][0]
     printf("%.2lf\n", dp[N][0]);
