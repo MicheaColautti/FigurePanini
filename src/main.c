@@ -59,7 +59,7 @@ int** createMatrix(int* data, int days, int cols) {
 }
 
 int main() {
-    const char* fileName = "../instances/instance_100_100.txt";
+    const char* fileName = "../instances/instance_10_1.txt";
     int* data = NULL;
     int dataSize = 0;
     int days = 0, tradingCards = 0;
@@ -74,9 +74,8 @@ int main() {
     // Create the matrix with all data starting from data[2]
     int** matrix = createMatrix(data + 2, days, cols);
 
-    //tempo iniziale
+    //Time at the beginning of the program
     struct timespec start, end;
-    // Ottieni il tempo di inizio
     clock_gettime(CLOCK_MONOTONIC, &start);
 
     int N = days;
@@ -159,6 +158,7 @@ int main() {
 
     // The final capital is dp[N][0]
     printf("%.2lf\n", dp[N][0]);
+    printf("File usato per il test: %s", fileName);
 
     // Free allocated memory
     for (int i = 0; i < days; i++) {
